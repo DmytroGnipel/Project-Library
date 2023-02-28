@@ -1,0 +1,11 @@
+input {
+    display: block;
+}
+
+td {
+    border: 1px solid black;
+    min-width: 300px;}
+
+input {
+    width: 300px;
+}
