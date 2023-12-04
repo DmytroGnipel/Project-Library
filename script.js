@@ -1,6 +1,16 @@
 let bookStorage = []
 let divMain = document.getElementById('main')
 
+function addInputs () {
+    for (let i = 0; i <=library.length - 1; i++) {
+        let input = document.createElement('input')
+        if (getNameParameters(library)[i] === 'isread') input.placeholder = 'do you read this book?'
+        else if (getNameParameters(library)[i] === 'pages') input.placeholder = 'how much pages the book has?'
+        else input.placeholder = `enter ${getNameParameters(library)[i]}`
+        divMain.insertAdjacentElement('afterbegin', input)
+    }
+}
+
 function library(title, author, pages, isread) {//constructor for filling library
     this.title = title
     this.author = author
@@ -8,7 +18,7 @@ function library(title, author, pages, isread) {//constructor for filling librar
     this.isread = isread
 }
 library.prototype.info = function() {
-    return `${this.title} by ${this.author}, ${this.pages} pages, read or not '${this.isread}'`}
+    return `${this.title} by ${this.author}, ${this.pages}, ${this.isread}`}
 
 function getNameParameters (func) {
     let string = func.toString()
@@ -33,25 +43,22 @@ function addInputs () {
 let button = document.createElement('button')
 button.textContent = 'NEW BOOK'
 button.addEventListener('click', function() {
-    let input = document.querySelector('input')
-    if (!input) {
         addInputs()
         button.textContent = 'SEND TO LIBRARY'
     }
     else craeteObject()
     
 })
-divMain.insertAdjacentElement("afterend", button)
+divMain.insertAdjacentElement("beforeend", button)
+
+
+
+
 
 function craeteObject() {//add object with the book to array
 let inputs = document.getElementsByTagName('input')
-if (inputs[0].value 
-    && inputs[1].value 
-    && +inputs[2].value - +inputs[2].value === 0 
-    && inputs[3].value === 'yes' || inputs[3].value === 'no') {
 let object = new library(inputs[0].value, inputs[1].value, inputs[2].value, inputs[3].value)
 bookStorage.push(object)
-for (let elem of inputs) elem.value = ''
 display(bookStorage)
 }
 else alert('enter correct(!) iformation about book before sending it to library')
@@ -68,18 +75,7 @@ let display = (array) => {//create table and add to it's cells values from array
         for (let k = 1; k <= scaleOfTable; k++) {
             if (array[counter]) {
             let cell = document.createElement('td')
-            cell.dataset.number = counter
-            let span = document.createElement('span')
-            cell.insertAdjacentElement('afterbegin', span)
-            span.textContent = array[counter].info()
-            let button = document.createElement('button')
-            button.textContent = 'reading status'
-            button.addEventListener('click', function () {
-            bookStorage[cell.dataset.number].changeReadStatus()
-            let spans = document.querySelectorAll('span')
-            spans[cell.dataset.number].textContent = bookStorage[cell.dataset.number].info()
-            })
-            cell.appendChild(button)
+            cell.textContent = array[counter].info()
             row.appendChild(cell)
             counter++
         }
@@ -87,23 +83,4 @@ let display = (array) => {//create table and add to it's cells values from array
         table.appendChild(row)
     }
     divMain.insertAdjacentElement('afterbegin', table)
-    remove() // for creating button 'remove'
-}
-
-library.prototype.changeReadStatus = function() {
-    if (this.isread === 'yes') this.isread = 'no'
-   else if (this.isread === 'no') this.isread = 'yes'
-}
-
-function remove() {
-    let cells = document.getElementsByTagName('td')
-    for (let i = 0; i < bookStorage.length; i++){
-    let buttonRemove = document.createElement('button')
-    buttonRemove.textContent = 'delete book'
-    cells[i].append(buttonRemove)
-    buttonRemove.addEventListener('click', function() {
-    bookStorage.splice(i, 1)
-    display(bookStorage)
-    })
-}
 }
