@@ -1,5 +1,9 @@
 input {
     display: block;
+    width: 300px;
+    padding: 5px;
+    margin: 5px;
+    
 }
 
 td {
@@ -9,3 +13,19 @@ td {
 input {
     width: 300px;
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+input:valid {
+    border: 1px dashed green;
+}
+
+input:invalid {
+    border: 1px solid red;
+}
+
+
+

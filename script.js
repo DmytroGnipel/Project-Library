@@ -32,10 +32,17 @@ function getNameParameters (func) {
 
 function addInputs () {
     for (let i = 0; i < library.length; i++) {
-        let input = document.createElement('input')
-        if (getNameParameters(library)[i] === 'isread') input.placeholder = "do you read this book? Only 'yes' or 'no'"
-        else if (getNameParameters(library)[i] === 'pages') input.placeholder = 'how much pages the book has? Enter a number'
+        const input = document.createElement('input')
+        if (getNameParameters(library)[i] === 'isread') {
+            input.placeholder = "do you read this book? Only 'yes' or 'no'"
+            input.setAttribute('pattern', 'yes|no')
+        } else if (getNameParameters(library)[i] === 'pages') {
+            input.placeholder = 'how much pages the book has? Enter a number'
+            input.setAttribute('pattern', '[0-9]+')
+        }
         else input.placeholder = `enter ${getNameParameters(library)[i]}`
+        input.setAttribute('required', '')
+        isValid(input)
         divMain.appendChild(input)
     }
 }
@@ -83,4 +90,41 @@ let display = (array) => {//create table and add to it's cells values from array
         table.appendChild(row)
     }
     divMain.insertAdjacentElement('afterbegin', table)
+<<<<<<< HEAD
+=======
+    remove() // for creating button 'remove'
+}
+
+library.prototype.changeReadStatus = function() {
+    if (this.isread === 'yes') this.isread = 'no'
+   else if (this.isread === 'no') this.isread = 'yes'
+}
+
+function remove() {
+    let cells = document.getElementsByTagName('td')
+    for (let i = 0; i < bookStorage.length; i++){
+    let buttonRemove = document.createElement('button')
+    buttonRemove.textContent = 'delete book'
+    cells[i].append(buttonRemove)
+    buttonRemove.addEventListener('click', function() {
+    bookStorage.splice(i, 1)
+    display(bookStorage)
+    })
+}
+}
+
+function isValid (input) {
+    input.addEventListener('blur', () => {
+        if (input.validity.valid) input.setCustomValidity('')
+        else {
+            if (input.validity.valueMissing) input.setCustomValidity('This field has to be filled')
+            else if (input.validity.patternMismatch) {
+                if (input.placeholder === "do you read this book? Only 'yes' or 'no'") 
+                input.setCustomValidity('You may input solely two words "yes" or "no" here')
+                else input.setCustomValidity('You must input only numbers in this field')
+            }
+        }
+        input.reportValidity()
+    })
+>>>>>>> formvalidation
 }
