@@ -22,10 +22,17 @@ function getNameParameters (func) {
 
 function addInputs () {
     for (let i = 0; i < library.length; i++) {
-        let input = document.createElement('input')
-        if (getNameParameters(library)[i] === 'isread') input.placeholder = "do you read this book? Only 'yes' or 'no'"
-        else if (getNameParameters(library)[i] === 'pages') input.placeholder = 'how much pages the book has? Enter a number'
+        const input = document.createElement('input')
+        if (getNameParameters(library)[i] === 'isread') {
+            input.placeholder = "do you read this book? Only 'yes' or 'no'"
+            input.setAttribute('pattern', 'yes|no')
+        } else if (getNameParameters(library)[i] === 'pages') {
+            input.placeholder = 'how much pages the book has? Enter a number'
+            input.setAttribute('pattern', '[0-9]+')
+        }
         else input.placeholder = `enter ${getNameParameters(library)[i]}`
+        input.setAttribute('required', '')
+        isValid(input)
         divMain.appendChild(input)
     }
 }
@@ -106,4 +113,19 @@ function remove() {
     display(bookStorage)
     })
 }
+}
+
+function isValid (input) {
+    input.addEventListener('blur', () => {
+        if (input.validity.valid) input.setCustomValidity('')
+        else {
+            if (input.validity.valueMissing) input.setCustomValidity('This field has to be filled')
+            else if (input.validity.patternMismatch) {
+                if (input.placeholder === "do you read this book? Only 'yes' or 'no'") 
+                input.setCustomValidity('You may input solely two words "yes" or "no" here')
+                else input.setCustomValidity('You must input only numbers in this field')
+            }
+        }
+        input.reportValidity()
+    })
 }
