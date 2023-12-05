@@ -7,11 +7,26 @@ input {
 }
 
 td {
-    border: 1px solid black;
-    min-width: 300px;}
+    border: 1px solid black;  
+}
 
-input {
-    width: 300px;
+button {
+    width: 200px;
+    margin: auto;
+}
+
+td > button {
+    margin-left: 10px;
+    width: fit-content;
+
+}
+
+#main {
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    align-items: center;
+    padding: 10px;
 }
 
 body {
@@ -26,6 +41,3 @@ input:valid {
 input:invalid {
     border: 1px solid red;
 }
-
-
-

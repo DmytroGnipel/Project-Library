@@ -1,16 +1,6 @@
 let bookStorage = []
 let divMain = document.getElementById('main')
 
-function addInputs () {
-    for (let i = 0; i <=library.length - 1; i++) {
-        let input = document.createElement('input')
-        if (getNameParameters(library)[i] === 'isread') input.placeholder = 'do you read this book?'
-        else if (getNameParameters(library)[i] === 'pages') input.placeholder = 'how much pages the book has?'
-        else input.placeholder = `enter ${getNameParameters(library)[i]}`
-        divMain.insertAdjacentElement('afterbegin', input)
-    }
-}
-
 function library(title, author, pages, isread) {//constructor for filling library
     this.title = title
     this.author = author
@@ -18,7 +8,7 @@ function library(title, author, pages, isread) {//constructor for filling librar
     this.isread = isread
 }
 library.prototype.info = function() {
-    return `${this.title} by ${this.author}, ${this.pages}, ${this.isread}`}
+    return `${this.title} by ${this.author}, ${this.pages} pages, read or not '${this.isread}'`}
 
 function getNameParameters (func) {
     let string = func.toString()
@@ -37,7 +27,7 @@ function addInputs () {
             input.placeholder = "do you read this book? Only 'yes' or 'no'"
             input.setAttribute('pattern', 'yes|no')
         } else if (getNameParameters(library)[i] === 'pages') {
-            input.placeholder = 'how much pages the book has? Enter a number'
+            input.placeholder = 'how much pages does the book have? Enter a number'
             input.setAttribute('pattern', '[0-9]+')
         }
         else input.placeholder = `enter ${getNameParameters(library)[i]}`
@@ -50,22 +40,25 @@ function addInputs () {
 let button = document.createElement('button')
 button.textContent = 'NEW BOOK'
 button.addEventListener('click', function() {
+    let input = document.querySelector('input')
+    if (!input) {
         addInputs()
         button.textContent = 'SEND TO LIBRARY'
     }
     else craeteObject()
     
 })
-divMain.insertAdjacentElement("beforeend", button)
-
-
-
-
+divMain.insertAdjacentElement("afterend", button)
 
 function craeteObject() {//add object with the book to array
 let inputs = document.getElementsByTagName('input')
+if (inputs[0].value 
+    && inputs[1].value 
+    && +inputs[2].value - +inputs[2].value === 0 
+    && inputs[3].value === 'yes' || inputs[3].value === 'no') {
 let object = new library(inputs[0].value, inputs[1].value, inputs[2].value, inputs[3].value)
 bookStorage.push(object)
+for (let elem of inputs) elem.value = ''
 display(bookStorage)
 }
 else alert('enter correct(!) iformation about book before sending it to library')
@@ -82,7 +75,18 @@ let display = (array) => {//create table and add to it's cells values from array
         for (let k = 1; k <= scaleOfTable; k++) {
             if (array[counter]) {
             let cell = document.createElement('td')
-            cell.textContent = array[counter].info()
+            cell.dataset.number = counter
+            let span = document.createElement('span')
+            cell.insertAdjacentElement('afterbegin', span)
+            span.textContent = array[counter].info()
+            let button = document.createElement('button')
+            button.textContent = 'reading status'
+            button.addEventListener('click', function () {
+            bookStorage[cell.dataset.number].changeReadStatus()
+            let spans = document.querySelectorAll('span')
+            spans[cell.dataset.number].textContent = bookStorage[cell.dataset.number].info()
+            })
+            cell.appendChild(button)
             row.appendChild(cell)
             counter++
         }
@@ -90,8 +94,6 @@ let display = (array) => {//create table and add to it's cells values from array
         table.appendChild(row)
     }
     divMain.insertAdjacentElement('afterbegin', table)
-<<<<<<< HEAD
-=======
     remove() // for creating button 'remove'
 }
 
@@ -114,17 +116,15 @@ function remove() {
 }
 
 function isValid (input) {
-    input.addEventListener('blur', () => {
-        if (input.validity.valid) input.setCustomValidity('')
-        else {
-            if (input.validity.valueMissing) input.setCustomValidity('This field has to be filled')
-            else if (input.validity.patternMismatch) {
-                if (input.placeholder === "do you read this book? Only 'yes' or 'no'") 
-                input.setCustomValidity('You may input solely two words "yes" or "no" here')
-                else input.setCustomValidity('You must input only numbers in this field')
-            }
+    input.addEventListener('input', (event) => {
+        if (input.validity.valueMissing) {
+            input.setCustomValidity('You must fill in this field')
+        } else if (input.validity.patternMismatch) {
+                    if (input.placeholder == 'how much pages does the book have? Enter a number') input.setCustomValidity('You have to use only numbers')
+                    else input.setCustomValidity('You have to use solely two words: "yes" or "no"')
+        } else {
+            input.setCustomValidity('')
         }
-        input.reportValidity()
+        input.reportValidity()  
     })
->>>>>>> formvalidation
 }
